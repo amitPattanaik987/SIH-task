@@ -1,39 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
+import {loadStripe} from '@stripe/stripe-js';
 
 const StudentForm = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        city: '',
-        email: '',
-        phone: '',
-        college: '',
-        domain: '',
-        lectureTime: '',
-        skills: ''
-    });
+    
+    const [formData, setformdata] = useState({
+            name: '',
+            city: '',
+            email: '',
+            phone: '',
+            college: '',
+            domain: '',
+            lectureTime: '',
+            skills: ''
+        });
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setformdata({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e) => {
+        
         e.preventDefault();
-  
-        fetch('http://localhost:5000/send-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Email sent successfully:', data);
-          })
-          .catch((error) => {
-            console.error('Error sending email:', error);
-          });
+        const formdatastring = JSON.stringify(formData);
+        console.log(formdatastring);
+        
+        console.log("handle submit");
+        localStorage.setItem("formdata",formdatastring)
+        
+        getfuction();
+        
     };
+
+    const getfuction = async () => {
+        const stripe = await loadStripe('pk_test_51Pt1NCGwu7WfDqJU4OlQm0xrOJf6W63Ccg20CjPUZe7xKkISIHmL6RMvneFf3rCl31roSBf1gUJdzgqO4iJIJq9T00KcqVqEXY');
+
+        console.log("stripe funct");
+
+        const body = {
+            product: 12500
+        }
+        console.log(body);
+
+        const headers = {
+            "Content-Type": "application/json"
+        }
+        const response = await fetch("http://localhost:5000/payment", {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(body)
+        })
+
+        const session = await response.json();
+
+        const result = stripe.redirectToCheckout({
+            sessionId: session.id
+        })
+
+        if (result.error) {
+            console.log(result.error);
+
+        }
+    }
+
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -188,7 +216,7 @@ const StudentForm = () => {
                         type="submit"
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     >
-                        Submit
+                        Procceed
                     </button>
                 </div>
             </form>

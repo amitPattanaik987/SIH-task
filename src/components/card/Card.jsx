@@ -7,6 +7,7 @@ const MentorCard = () => {
   const [skills, setSkills] = useState(["Java", "Python", "Git", "React"]);
   const navigate=useNavigate();
 
+  
   return (
     <div
       className="mx-auto bg-white rounded-xl shadow-md overflow-hidden"
@@ -63,7 +64,7 @@ const MentorCard = () => {
               <span className="ml-2 text-gray-500">Per Month</span>
             </div>
             <div className="mt-4 flex space-x-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={()=>navigate("/userdata")}>
+              <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={()=>{navigate("/userdata")}}>
                 Get 1:1
               </button>
               <button className="bg-green-500 text-white px-4 py-2 rounded">
